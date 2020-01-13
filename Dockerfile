@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic AS build
 
-ENV http_proxy http://r-directproxy.role:3128
-ENV https_proxy http://r-directproxy.role:3128
-ENV no_proxy localhost,127.0.0.1,sonarqube
+#ENV http_proxy http://r-directproxy.role:3128
+#ENV https_proxy http://r-directproxy.role:3128
+#ENV no_proxy localhost,127.0.0.1,sonarqube
 ENV PATH "${PATH}:/root/.dotnet/tools"
 
 RUN apt-get update && apt-get install -y openjdk-8-jre nodejs
