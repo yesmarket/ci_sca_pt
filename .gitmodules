@@ -1,0 +1,3 @@
+[submodule "ASPNETCore-WebAPI-Sample"]
+	path = ASPNETCore-WebAPI-Sample
+	url = https://github.com/yesmarket/ASPNETCore-WebAPI-Sample.git
