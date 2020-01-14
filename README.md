@@ -1,4 +1,4 @@
-Firstly pull down the Galaxy.Template submodule - `git submodule update`.
+Firstly pull down the Galaxy.Template submodule - `git submodule update --init --recursive`.
 
 If you don't have SonarCloud, you can run SonarQube locally as follows (*note; need to create a network, so that sonar scanner can talk to SonarQube during build*):
 ```
