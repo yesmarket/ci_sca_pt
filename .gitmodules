@@ -1,3 +1,4 @@
-[submodule "ASPNETCore-WebAPI-Sample"]
-	path = ASPNETCore-WebAPI-Sample
-	url = https://github.com/yesmarket/ASPNETCore-WebAPI-Sample.git
+[submodule "Galaxy.Template"]
+	path = Galaxy.Template
+	url = https://flexigroup.visualstudio.com/Flexigroup-Universe/_git/Galaxy.Template
+	branch = feature/net_3.1
