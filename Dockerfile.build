@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
 
 ARG SONAR_PROJECT_NAME
 ARG SONAR_PROJECT_KEY
@@ -17,6 +17,8 @@ RUN dotnet tool install --global dotnet-sonarscanner
 RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
 
 WORKDIR /
+
+ARG CACHEBUST=1
 
 COPY ./Galaxy.Template ./Galaxy.Template
 COPY ./SonarQube.Analysis.xml /root/.dotnet/tools/.store/dotnet-sonarscanner/4.8.0/dotnet-sonarscanner/4.8.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
