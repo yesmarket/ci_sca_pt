@@ -1,3 +1,4 @@
 .env
+dependency-check-report.xml
 zap-report.html
 zap-report.xml

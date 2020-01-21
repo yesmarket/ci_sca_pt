@@ -12,7 +12,7 @@ ENV PATH "${PATH}:/root/.dotnet/tools"
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
-    apt-get install -y openjdk-11-jre nodejs
+    apt-get install -y openjdk-11-jre nodejs curl
 
 RUN dotnet tool install --global dotnet-sonarscanner
 

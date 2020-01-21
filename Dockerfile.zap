@@ -11,7 +11,9 @@ ENV no_proxy localhost,127.0.0.1,template_webapi,keycloak
 WORKDIR /zap
 
 USER root
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y jq nodejs
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get update && \
+    apt-get install -y jq nodejs
 USER zap
 
 RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip && \

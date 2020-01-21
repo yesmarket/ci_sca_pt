@@ -12,9 +12,11 @@ ENV PATH "${PATH}:/root/.dotnet/tools"
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
-    apt-get install -y openjdk-11-jre nodejs
+    apt-get install -y openjdk-11-jre nodejs curl unzip
 
 RUN dotnet tool install --global dotnet-sonarscanner
+RUN wget -P /tmp https://dl.bintray.com/jeremy-long/owasp/dependency-check-5.3.0-release.zip && \
+    unzip /tmp/dependency-check-5.3.0-release.zip -d /opt
 
 WORKDIR /
 
@@ -27,7 +29,8 @@ RUN dotnet-sonarscanner begin \
     /k:${SONAR_PROJECT_KEY} \
     /n:${SONAR_PROJECT_NAME} \
     /v:"1.0" \
-    /d:sonar.verbose=true
+    /d:sonar.verbose=true \
+    /d:sonar.dependencyCheck.xmlReportPath=/tmp/dependency-check-report.xml
 
 RUN dotnet restore /Galaxy.Template/src/Galaxy.Template.WebApi.Tests/Galaxy.Template.WebApi.Tests.csproj
 RUN dotnet test /Galaxy.Template/src/Galaxy.Template.WebApi.Tests/Galaxy.Template.WebApi.Tests.csproj \
@@ -35,6 +38,11 @@ RUN dotnet test /Galaxy.Template/src/Galaxy.Template.WebApi.Tests/Galaxy.Templat
     /p:CoverletOutputFormat=opencover
 
 RUN dotnet restore /Galaxy.Template/src/Galaxy.Template.WebApi/Galaxy.Template.WebApi.csproj
+
+RUN /opt/dependency-check/bin/dependency-check.sh \
+    --project Galaxy.Template \
+    --scan /Galaxy.Template/src \
+    --out /tmp
 
 RUN dotnet publish /Galaxy.Template/src/Galaxy.Template.WebApi/Galaxy.Template.WebApi.csproj \
     -c Release \

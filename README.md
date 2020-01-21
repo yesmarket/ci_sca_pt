@@ -34,13 +34,13 @@ In SonarQube/Cloud create a project and note down the project `Name` and `Key` -
 
 To run the build follow the example below;
 ```
-docker build \
+docker build ^
    -f Dockerfile.build \
    --build-arg SONAR_PROJECT_NAME=Galaxy.Template \
    --build-arg SONAR_PROJECT_KEY=4ea3aa28-a9b0-45d9-ba6c-acffa7244b33 \
    --build-arg WHITESOURCE_API_KEY=redacted \
    --build-arg HTTP_PROXY=http://proxy:8080 \
-   --build-arg CACHEBUST=$(date)
+   --build-arg CACHEBUST=$(date) \
    --network=sonar \
    -t gt \
    .

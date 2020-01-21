@@ -6,4 +6,4 @@
    -x ./zap-report.xml \
    -z "-configfile /zap/wrk/auth.prop"
 
-sonar-runner
+#sonar-runner

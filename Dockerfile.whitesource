@@ -7,7 +7,9 @@ ENV http_proxy $HTTP_PROXY
 ENV https_proxy $HTTP_PROXY
 ENV no_proxy localhost,127.0.0.1,sonarqube
 
-RUN apt-get update && apt-get install -y openjdk-11-jre curl
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get update && \
+    apt-get install -y openjdk-11-jre curl
 
 RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
 
@@ -20,6 +22,12 @@ COPY ./wss-unified-agent.config ./wss-unified-agent.config
 
 RUN dotnet restore /Galaxy.Template/src/Galaxy.Template.WebApi/Galaxy.Template.WebApi.csproj
 
-RUN java -jar wss-unified-agent.jar -c ./wss-unified-agent.config -d ./Galaxy.Template -apiKey ${WHITESOURCE_API_KEY}
+RUN java -jar wss-unified-agent.jar \
+    -c ./wss-unified-agent.config \
+    -d ./Galaxy.Template \
+    -apiKey ${WHITESOURCE_API_KEY}
 
-RUN dotnet publish /Galaxy.Template/src/Galaxy.Template.WebApi/Galaxy.Template.WebApi.csproj -c Release --self-contained false -o /opt/Galaxy.Template.WebApi
+RUN dotnet publish /Galaxy.Template/src/Galaxy.Template.WebApi/Galaxy.Template.WebApi.csproj \
+    -c Release \
+    --self-contained false \
+    -o /opt/Galaxy.Template.WebApi
