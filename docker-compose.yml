@@ -1,0 +1,144 @@
+version: '3.5'
+
+networks:
+   ci_sca_pt:
+
+volumes:
+   rabbitmq_data: {}
+   postgres_data: {}
+   mssqlserver_data: {}
+
+services:
+
+   sonarqube:
+      build:
+         context: sonar/
+         args:
+            HTTP_PROXY: ${HTTP_PROXY}
+      container_name: sonarqube
+      ports:
+         - 9000:9000
+      networks:
+         - ci_sca_pt
+
+   rabbitmq:
+      build:
+         context: rabbitmq/
+         args:
+            HTTP_PROXY: ${HTTP_PROXY}
+      container_name: rabbitmq
+      logging:
+         driver: local
+         options:
+            max-size: "200k"
+            max-file: "10"
+      environment:
+         - RABBITMQ_DEFAULT_USER=admin
+         - RABBITMQ_DEFAULT_PASS=admin
+      restart: unless-stopped
+      ports:
+         - 5672:5672
+         - 5671:5671
+         - 15672:15672
+      networks:
+         - ci_sca_pt
+      volumes:
+         - rabbitmq_data:/var/lib/rabbitmq
+
+   postgres:
+      image: postgres:10.5-alpine
+      container_name: postgres
+      environment:
+         POSTGRES_DB: keycloak
+         PGDATA: /var/lib/postgresql/data
+         POSTGRES_USER: admin
+         POSTGRES_PASSWORD: admin
+      ports:
+         - 5432:5432
+      networks:
+         - ci_sca_pt
+      volumes:
+         - postgres_data:/var/lib/postgresql/data
+
+   keycloak:
+      build:
+         context: keycloak/
+         dockerfile: Dockerfile.keycloak
+      container_name: keycloak
+      environment:
+         DB_VENDOR: postgres
+         DB_ADDR: postgres
+         DB_PORT: 5432
+         DB_DATABASE: keycloak
+         DB_USER: admin
+         DB_PASSWORD: admin
+         KEYCLOAK_USER: admin
+         KEYCLOAK_PASSWORD: admin
+      ports:
+         - 8080:8080
+         - 443:8080
+      networks:
+         - ci_sca_pt
+      depends_on:
+         - postgres
+
+   createusers:
+      build:
+         context: keycloak/
+         dockerfile: Dockerfile.createusers
+      container_name: createusers
+      networks:
+         - ci_sca_pt
+      depends_on:
+         - keycloak
+
+   mssqlserver:
+      image: microsoft/mssql-server-linux:latest
+      container_name: mssqlserver
+      volumes:
+          - mssqlserver_data:/var/opt/mssql
+      environment:
+         - ACCEPT_EULA=Y
+         - SA_PASSWORD=P@ssw0rd
+      restart: unless-stopped
+      ports:
+         - 1433:1433
+      networks:
+         - ci_sca_pt
+
+   createschema:
+      build:
+         context: Galaxy.Template/database_migrations/
+      container_name: createschema
+      environment:
+         - DB_HOST=mssqlserver
+         - DB_NAME=galaxy
+         - DB_SCHEMA=template
+         - DB_USERNAME=sa
+         - DB_PASSWORD=P@ssw0rd
+         - DB_SERVICE_ACCOUNT_USERNAME=template
+         - DB_SERVICE_ACCOUNT_PASSWORD=P@ssw0rd
+      networks:
+         - ci_sca_pt
+      depends_on:
+         - mssqlserver
+
+   webapi:
+      build:
+         context: Galaxy.Template/src/
+         dockerfile: Dockerfile.webapi
+         args:
+            BUILD_IMAGE_TAG: 3.1-bionic
+            RUNTIME_IMAGE_TAG: 3.1-bionic
+      container_name: webapi
+      environment:
+         - ASPNETCORE_ENVIRONMENT=Docker
+         - PORT_NUMBER=10000
+      ports:
+         - 10000:10000
+      networks:
+         - ci_sca_pt
+      depends_on:
+         - mssqlserver
+         - rabbitmq
+         - keycloak

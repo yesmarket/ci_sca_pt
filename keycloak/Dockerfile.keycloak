@@ -1,0 +1,5 @@
+FROM jboss/keycloak:4.5.0.Final
+
+COPY ./galaxy-realm.json /etc/settings/galaxy-realm.json
+
+ENV KEYCLOAK_IMPORT /etc/settings/galaxy-realm.json
