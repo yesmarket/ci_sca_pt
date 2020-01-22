@@ -2,3 +2,11 @@
 	path = Galaxy.Template
 	url = https://flexigroup.visualstudio.com/Flexigroup-Universe/_git/Galaxy.Template
 	branch = feature/net_3.1
+[submodule "Galaxy.BankStatement"]
+	path = Galaxy.BankStatement
+	url = https://flexigroup.visualstudio.com/Flexigroup-Universe/_git/Galaxy.BankStatement
+	branch = develop
+[submodule "Galaxy.Funding"]
+	path = Galaxy.Funding
+	url = https://flexigroup.visualstudio.com/Flexigroup-Universe/_git/Galaxy.Funding
+	branch = develop

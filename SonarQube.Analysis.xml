@@ -7,4 +7,6 @@
   <!-- sonar.login should be passed to dotnet-sonarscanner at the command line e.g. /d:sonar.login="4284be4c-1378-44e2-8f29-9aaecd0d33d9" -->
   <!-- <Property Name="sonar.login">REDACTED</Property> -->
   <Property Name="sonar.cs.opencover.reportsPaths">/Galaxy.Template/src/Galaxy.Template.WebApi.Tests/coverage.opencover.xml</Property>
+  <Property Name="sonar.scm.enabled">false</Property>
+  <!-- <Property Name="sonar.scm.provider">git</Property> -->
 </SonarQubeAnalysisProperties>
